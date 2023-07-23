@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block start %}
+
+  <nav class="navbar bg-body-tertiary shadow-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand">COOkMe</a>
+        {% if request.user.is_authenticated %}
+          <p><a href="/logout/" class="btn btn-success">Logout</a></p>
+        {% else %}
+          <p><a href="/login/" class="btn btn-success">login</a></p>
+        {% endif %}
+    </div>
+  </nav>
+
+
+
+
+    <div class="container">
+        <form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+            <!-- enctype="multipart/form-data"  we use this to send data to backend--> 
+            {% csrf_token %}
+            <h2>Add Receipes</h2>
+            <hr>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Receipe Name</label>
+              <input name="receipe_name" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Receipe Description</label>
+              <textarea name="receipe_description" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3 form-check">
+              <label class="form-check-label" for="exampleCheck1">Receipe Image</label>
+              <input name="receipe_image" type="file" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">ADD</button>
+        </form>
+
+
+        <div class="container mt-5">
+          <div class="mx-auto col-6">
+            <form>
+            <div class="mb-3">
+              <label for="" class="form-label">Search Food</label>
+              <input type="text" name="search" id="" value="">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </form>
+          </div>
+        </div>
+
+        <table class="table table-success table-striped-columns">
+          <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Receipe Name</th>
+              <th scope="col">Receipe Description</th>
+              <th scope="col">Receipe Image</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+
+
+          <tbody>
+
+            {% for receipe in receipes %}
+
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ receipe.receipe_name }}</td>
+              <td>{{receipe.receipe_description }}</td>
+              {% if receipe.receipe_image %}
+                <td>
+                  <img src="/media/{{receipe.receipe_image}}" style="height: 150px;">
+                </td>
+              {% else %}
+              <td>
+              <!-- <p>not found</p> -->
+                  <img src="/media/receipe/random.jpg" style="height: 150px;">
+              </td> 
+              {% endif %}
+
+              <td>
+                <a href="/delete-receipe/{{receipe.id}}" class="btn btn-danger m-2">Delete</a>
+                <a href="/update-receipe/{{receipe.id}}" class="btn btn-success">Update</a>
+              </td>
+
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+    </div>
+{% endblock %}
